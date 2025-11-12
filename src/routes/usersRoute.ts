@@ -1,6 +1,6 @@
 import express from "express";
-import { validateSignup, validateLogin } from "../utils/expressValidator";
-import usersController from "../controllers/usersController";
+import { validateSignup, validateLogin } from "../utils/expressValidator.js";
+import usersController from "../controllers/usersController.js";
 
 const usersRoute = express.Router();
 

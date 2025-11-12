@@ -10,7 +10,7 @@ let app: express.Express;
 beforeAll(async () => {
   app = express();
   app.use(cors());
-  app.get("/test", (req, res) => res.json({ message: "World" }));
+  app.get("/test", (req, res) => res.json({ message: "Hello, World!" }));
 });
 
 afterAll(async () => {

@@ -24,7 +24,7 @@ app.get("/test", async (req: Request, res: Response, next: NextFunction) => {
 });
 
 // mount routes
-import usersRoute from "./routes/usersRoute";
+import usersRoute from "./routes/usersRoute.js";
 app.use("/", usersRoute);
 
 // launch
