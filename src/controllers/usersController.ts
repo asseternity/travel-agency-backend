@@ -102,7 +102,8 @@ const postAutoLogin = async (
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error("JWT_SECRET is not defined");
     const decoded = jwt.verify(token, secret) as { id: string };
-    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+    const userId = Number(decoded.id);
+    const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) return res.status(404).send("User not found");
     const newToken = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
     return res
