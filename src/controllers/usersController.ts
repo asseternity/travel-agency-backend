@@ -17,27 +17,6 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getFindUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const user_name = req.params.user_name;
-    const user = await prisma.user.findFirst({
-      where: {
-        name: user_name,
-      },
-    });
-
-    if (!user) {
-      return res.status(400).send(`User not found`);
-    }
-
-    return res
-      .status(200)
-      .json({ email: user.email, fullName: user.full_name });
-  } catch (err) {
-    return next(err);
-  }
-};
-
 const postSignUp = async (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
@@ -136,7 +115,6 @@ const postAutoLogin = async (
 
 export default {
   getAllUsers,
-  getFindUser,
   postSignUp,
   postManualLogin,
   postAutoLogin,
