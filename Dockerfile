@@ -1,5 +1,5 @@
 # Use official Node.js LTS image
-FROM node:18-alpine
+FROM node:20-bookworm
 # Set working directory
 WORKDIR /app
 # Copy package files first (for layer caching)

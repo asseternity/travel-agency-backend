@@ -1,0 +1,33 @@
+[v] install testing
+[v] test with local DB
+[v] create routes
+[v] bcrypt
+[v] jwt and autologin
+[v] error escapes for all controllers:
+- if the req or param data is wrong or missing
+- if there's nothing in the DB
+[v] sanitize user input:
+- 8 characters pw, with 1 number and 1 symbol
+- 2 characters first name
+- 2 characters last name
+- email format
+- matching password and confirm password
+- remove code and spaces
+[_] publish on railway
+[_] update my personal documentation setup:
+
+- add vitest, its setup, sample test
+- add how to run / test in browser / run tests:
+    docker compose up -d
+    docker compose exec app npm run test
+    docker compose down -v
+- package.json
+    "type": "module",
+- tsconfig.json
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+- remove __dirnames
+- Dockerfile:
+    FROM node:20-bookworm
+
+[_] write tests with mocks
