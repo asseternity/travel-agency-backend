@@ -20,15 +20,21 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
 const postSignUp = async (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({
+      error: errors
+        .array()
+        .map((e) => e.msg)
+        .join(", "),
+    });
   try {
     if (req.body.password !== req.body.confirmPassword) {
-      return res.status(400).send(`Passwords don't match`);
+      return res.status(400).json({ error: "Passwords don't match" });
     }
     const existing = await prisma.user.findUnique({
       where: { email: req.body.email },
     });
-    if (existing) return res.status(400).send("Email already exists");
+    if (existing)
+      return res.status(400).json({ error: "Email already exists" });
 
     const email = req.body.email;
     const full_name = req.body.firstName + " " + req.body.lastName;
@@ -62,18 +68,23 @@ const postManualLogin = async (
 ) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({
+      error: errors
+        .array()
+        .map((e) => e.msg)
+        .join(", "),
+    });
   try {
     const user = await prisma.user.findUnique({
       where: { email: req.body.email },
     });
     if (!user) {
-      return res.status(400).send(`Incorrect email or password`);
+      return res.status(400).json({ error: "Incorrect email or password" });
     }
 
     const isMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isMatch) {
-      return res.status(400).send(`Incorrect email or password`);
+      return res.status(400).json({ error: "Incorrect email or password" });
     }
 
     const payload = { email: user.email, id: user.id };
@@ -97,20 +108,20 @@ const postAutoLogin = async (
   next: NextFunction
 ) => {
   const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).send("Missing token");
+  if (!token) return res.status(401).json({ error: "Missing token" });
   try {
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error("JWT_SECRET is not defined");
     const decoded = jwt.verify(token, secret) as { id: string };
     const userId = Number(decoded.id);
     const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user) return res.status(404).send("User not found");
+    if (!user) return res.status(404).json({ error: "User not found" });
     const newToken = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
     return res
       .status(200)
       .json({ email: user.email, full_name: user.full_name, token: newToken });
   } catch {
-    res.status(401).send("Invalid token.");
+    return res.status(401).json({ error: "Invalid token" });
   }
 };
 
