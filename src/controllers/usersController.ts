@@ -31,12 +31,12 @@ const postSignUp = async (req: Request, res: Response, next: NextFunction) => {
     if (existing) return res.status(400).send("Email already exists");
 
     const email = req.body.email;
-    const fullName = req.body.firstName + " " + req.body.lastName;
+    const full_name = req.body.firstName + " " + req.body.lastName;
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = await prisma.user.create({
       data: {
         email: email,
-        full_name: fullName,
+        full_name: full_name,
         password: hashedPassword,
       },
     });
@@ -49,7 +49,7 @@ const postSignUp = async (req: Request, res: Response, next: NextFunction) => {
     const token = jwt.sign(payload, secret, options);
     return res
       .status(200)
-      .json({ email: user.email, fullName: user.full_name, token });
+      .json({ email: user.email, full_name: user.full_name, token });
   } catch (err) {
     return next(err);
   }
@@ -85,7 +85,7 @@ const postManualLogin = async (
     const token = jwt.sign(payload, secret, options);
     return res
       .status(200)
-      .json({ email: user.email, fullName: user.full_name, token });
+      .json({ email: user.email, full_name: user.full_name, token });
   } catch (err) {
     return next(err);
   }
@@ -108,7 +108,7 @@ const postAutoLogin = async (
     const newToken = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
     return res
       .status(200)
-      .json({ email: user.email, fullName: user.full_name, token: newToken });
+      .json({ email: user.email, full_name: user.full_name, token: newToken });
   } catch {
     res.status(401).send("Invalid token.");
   }
